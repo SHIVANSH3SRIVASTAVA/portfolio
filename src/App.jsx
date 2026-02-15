@@ -11,6 +11,68 @@ function App() {
   const [scrolled, setScrolled] = useState(false)
   const [expandImage, setExpandImage] = useState(false)
 
+  const [selectedCert, setSelectedCert] = useState(null)
+
+  const certificates = [
+    {
+      title: "Web Development",
+      file: "/certificates/web.png",
+      type: "image"
+    },
+    {
+      title: "Innomatics Hackathon",
+      file: "/certificates/ss.png",
+      type: "image"
+    },
+    {
+      title: "Prompt Engineering",
+      file: "/certificates/prompt.png",
+      type: "image"
+    },
+    {
+      title: "Open AI GPT-3",
+      file: "/certificates/openai.png",
+      type: "image"
+    },
+    { title: "MakeX Internship", 
+      file: "/certificates/MakeX.png", 
+      type: "image" 
+    },
+    { title: "M4L Hackathon", 
+      file: "/certificates/m4l.png", 
+      type: "image"
+    },
+    { title: "GPT Models", 
+      file: "/certificates/gpt_models.png", 
+      type: "image" 
+    },
+    { title: "GenAI Models", 
+      file: "/certificates/gen_models.png", 
+      type: "image" 
+    },
+    { title: "Code Clash Hackathon", 
+      file: "/certificates/code_clash_hackathon.png", 
+      type: "image" 
+    },
+    { title: "VBYLD Quiz", 
+      file: "/certificates/certificate.png", 
+      type: "image" 
+    },
+    { title: "Fundamentals Of AI", 
+      file: "/certificates/ai.png", 
+      type: "image" 
+    },
+    { title: "AI First Software Engineering", 
+      file: "/certificates/ai_se.png", 
+      type: "image" 
+    },
+    // { title: "Git & GitHub", 
+    //   file: "/certificates/git.jpg", 
+    //   type: "image" 
+    // }
+  ]
+
+
   useEffect(() => {
     AOS.init({ duration: 1000 })
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -24,11 +86,10 @@ function App() {
 
   return (
     <div
-      className={`${
-        dark
+      className={`${dark
           ? "bg-[#0B1120] text-gray-100"
           : "bg-gray-50 text-gray-900"
-      } relative min-h-screen flex flex-col w-full max-w-[100vw] overflow-x-hidden transition-all duration-500`}
+        } relative min-h-screen flex flex-col w-full max-w-[100vw] overflow-x-hidden transition-all duration-500`}
     >
 
       {/* ===== Responsive Glow Background ===== */}
@@ -62,13 +123,12 @@ function App() {
 
       {/* ================= NAVBAR ================= */}
       <nav
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          scrolled
+        className={`fixed w-full z-50 transition-all duration-300 ${scrolled
             ? dark
               ? "backdrop-blur-xl bg-black/40 border-b border-white/10"
               : "backdrop-blur-xl bg-white/70 border-b border-gray-200"
             : "bg-transparent"
-        }`}
+          }`}
       >
         <div className="max-w-6xl mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
 
@@ -122,9 +182,8 @@ function App() {
       <section className="flex flex-col justify-center items-center text-center min-h-screen px-4 sm:px-6">
 
         <div
-          className={`relative backdrop-blur-3xl ${
-            dark ? "bg-white/5 border-white/10" : "bg-white/80 border-gray-200"
-          } border rounded-3xl p-8 sm:p-14 shadow-[0_0_60px_rgba(0,0,0,0.4)]`}
+          className={`relative backdrop-blur-3xl ${dark ? "bg-white/5 border-white/10" : "bg-white/80 border-gray-200"
+            } border rounded-3xl p-8 sm:p-14 shadow-[0_0_60px_rgba(0,0,0,0.4)]`}
         >
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight">
@@ -186,9 +245,8 @@ function App() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className={`backdrop-blur-xl ${
-            dark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
-          } border p-8 rounded-2xl shadow-xl hover:scale-105 transition`}>
+          <div className={`backdrop-blur-xl ${dark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
+            } border p-8 rounded-2xl shadow-xl hover:scale-105 transition`}>
 
             <h3 className="text-xl font-semibold mb-4">
               Movie Recommender
@@ -217,20 +275,48 @@ function App() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {Array.from({ length: 13 }).map((_, index) => (
+
+          {certificates.map((cert, index) => (
             <div
               key={index}
-              className={`p-6 rounded-xl backdrop-blur-xl border ${
-                dark
+              className={`cursor-pointer rounded-xl overflow-hidden backdrop-blur-xl border ${dark
                   ? "bg-white/5 border-white/10"
                   : "bg-white border-gray-200"
-              } shadow hover:scale-105 transition`}
+                } shadow hover:scale-105 transition`}
+              onClick={() => {
+                if (cert.type === "image") {
+                  setSelectedCert(cert.file)
+                } else {
+                  window.open(cert.file, "_blank")
+                }
+              }}
             >
-              Certificate {index + 1}
+
+              {/* Thumbnail */}
+              <div className="h-48 flex items-center justify-center bg-gray-200 dark:bg-gray-800">
+                {cert.type === "image" ? (
+                  <img
+                    src={cert.file}
+                    alt={cert.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-lg font-semibold text-gray-600">
+                    📄 PDF Certificate
+                  </span>
+                )}
+              </div>
+
+              <div className="p-4">
+                <p className="font-medium">{cert.title}</p>
+              </div>
+
             </div>
           ))}
+
         </div>
       </section>
+
 
       {/* ================= CONTACT ================= */}
       <section id="contact" className="py-24 text-center px-4 sm:px-6">
@@ -246,11 +332,27 @@ function App() {
         </a>
       </section>
 
+      {/* ================= CERTIFICATE MODAL ================= */}
+      {selectedCert && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedCert(null)}
+        >
+          <img
+            src={selectedCert}
+            alt="certificate"
+            className="max-h-[90vh] max-w-full rounded-xl shadow-2xl"
+          />
+        </div>
+      )}
+
+
+
+
       {/* ================= FOOTER ================= */}
       <footer
-        className={`mt-auto py-6 text-center ${
-          dark ? "bg-black/30" : "bg-gray-200"
-        }`}
+        className={`mt-auto py-6 text-center ${dark ? "bg-black/30" : "bg-gray-200"
+          }`}
       >
         <p className="text-sm opacity-70">
           © {new Date().getFullYear()} Shivansh Srivastava. All rights reserved.
