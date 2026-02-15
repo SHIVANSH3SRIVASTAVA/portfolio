@@ -143,7 +143,7 @@ function App() {
           {/* Social Links */}
           <div className="flex justify-center gap-8 mt-8 text-2xl">
             <a
-              href="https://github.com/SHIVANSHSRIVASTAVA"
+              href="https://github.com/SHIVANSH3SRIVASTAVA"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:scale-110 hover:text-violet-400 transition"
