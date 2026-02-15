@@ -83,7 +83,7 @@ function App() {
           onClick={() => setExpandImage(false)}
         >
           <img
-            src="/profile.jpg"
+            src="/profile.jpeg"
             className="w-64 h-64 rounded-full object-cover border-4 border-blue-500"
           />
         </div>
@@ -113,9 +113,9 @@ function App() {
         </h2>
 
         <div className="flex gap-6 mt-8 text-2xl">
-          <a href="https://github.com/YOUR_GITHUB" target="_blank"><FaGithub /></a>
-          <a href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank"><FaLinkedin /></a>
-          <a href="https://instagram.com/YOUR_INSTAGRAM" target="_blank"><FaInstagram /></a>
+          <a href="https://github.com/SHIVANSH3SRIVASTAVA" target="_blank"><FaGithub /></a>
+          <a href="https://linkedin.com/in/shivansh3srivastava" target="_blank"><FaLinkedin /></a>
+          {/* <a href="https://instagram.com/YOUR_INSTAGRAM" target="_blank"><FaInstagram /></a> */}
         </div>
 
         {/* RESUME BUTTON */}
