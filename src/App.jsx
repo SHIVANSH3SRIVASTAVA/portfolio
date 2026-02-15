@@ -12,7 +12,7 @@ function App() {
           {/* Profile Image + Name */}
           <div className="flex items-center gap-3">
             <img
-              src="/profile.jpg"
+              src="/profile.jpeg"
               alt="Shivansh"
               className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500/70 ring-offset-2 ring-offset-gray-950 hover:scale-105 transition"
             />
