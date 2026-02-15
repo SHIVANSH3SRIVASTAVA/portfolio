@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { FaGithub, FaLinkedin, FaMoon, FaSun } from "react-icons/fa"
 import { Typewriter } from "react-simple-typewriter"
 import AOS from "aos"
@@ -27,12 +27,11 @@ function App() {
   const [scrolled, setScrolled] = useState(false)
   const [expandImage, setExpandImage] = useState(false)
   const [selectedCert, setSelectedCert] = useState(null)
+  const [isPaused, setIsPaused] = useState(false)
 
   const [activeCert, setActiveCert] = useState(
     Math.floor(certificates.length / 2)
   )
-
-  const touchStartX = useRef(null)
 
   useEffect(() => {
     AOS.init({ duration: 1000 })
@@ -41,27 +40,16 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // 🔁 Auto Slide
+  // Smooth Auto Scroll
   useEffect(() => {
+    if (isPaused) return
     const interval = setInterval(() => {
-      setActiveCert(prev => (prev + 1) % certificates.length)
-    }, 4000)
+      setActiveCert(prev =>
+        prev === certificates.length - 1 ? 0 : prev + 1
+      )
+    }, 5000) // slower = smoother
     return () => clearInterval(interval)
-  }, [certificates.length])
-
-  // ⌨ Keyboard Navigation
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === "ArrowRight")
-        setActiveCert(prev => (prev + 1) % certificates.length)
-      if (e.key === "ArrowLeft")
-        setActiveCert(prev =>
-          prev === 0 ? certificates.length - 1 : prev - 1
-        )
-    }
-    window.addEventListener("keydown", handleKey)
-    return () => window.removeEventListener("keydown", handleKey)
-  }, [certificates.length])
+  }, [isPaused])
 
   const particlesInit = async (main) => {
     await loadFull(main)
@@ -70,43 +58,46 @@ function App() {
   return (
     <div className={`${dark ? "bg-[#0B1120] text-gray-100" : "bg-gray-50 text-gray-900"} relative min-h-screen flex flex-col overflow-x-hidden transition-all duration-500`}>
 
-      {/* Glow */}
+      {/* Glow + Particles */}
       {dark && (
-        <div className="absolute inset-0 -z-20 overflow-hidden">
-          <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-violet-600/25 rounded-full blur-[160px]" />
-          <div className="absolute bottom-[-200px] right-[-200px] w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[160px]" />
-        </div>
-      )}
+        <>
+          <div className="absolute inset-0 -z-20 overflow-hidden">
+            <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-violet-600/25 rounded-full blur-[160px]" />
+            <div className="absolute bottom-[-200px] right-[-200px] w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[160px]" />
+          </div>
 
-      {/* Particles */}
-      {dark && (
-        <Particles
-          init={particlesInit}
-          className="absolute inset-0 -z-10"
-          options={{
-            background: { color: "transparent" },
-            particles: {
-              number: { value: 40 },
-              size: { value: 2 },
-              opacity: { value: 0.3 },
-              move: { enable: true, speed: 0.5 },
-            },
-          }}
-        />
+          <Particles
+            init={particlesInit}
+            className="absolute inset-0 -z-10"
+            options={{
+              background: { color: "transparent" },
+              particles: {
+                number: { value: 40 },
+                size: { value: 2 },
+                opacity: { value: 0.3 },
+                move: { enable: true, speed: 0.5 },
+              },
+            }}
+          />
+        </>
       )}
 
       {/* NAVBAR */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-        ? dark
-          ? "backdrop-blur-xl bg-black/40 border-b border-white/10"
-          : "backdrop-blur-xl bg-white/70 border-b border-gray-200"
-        : "bg-transparent"
-        }`}>
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? dark
+            ? "backdrop-blur-xl bg-black/40 border-b border-white/10"
+            : "backdrop-blur-xl bg-white/70 border-b border-gray-200"
+          : "bg-transparent"
+      }`}>
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
 
           <div onClick={() => setExpandImage(true)} className="cursor-pointer">
-            <img src="/profile.jpeg"
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-violet-400 hover:scale-110 transition" />
+            <img
+              src="/profile.jpeg"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-violet-400 hover:scale-110 transition"
+              alt="profile"
+            />
           </div>
 
           <div className="flex gap-8 items-center font-medium">
@@ -114,19 +105,39 @@ function App() {
             <a href="#certificates" className="hover:text-violet-400 transition">Certificates</a>
             <a href="#contact" className="hover:text-violet-400 transition">Contact</a>
 
-            <button onClick={() => setDark(!dark)} className="text-xl hover:scale-110 transition">
+            <button
+              onClick={() => setDark(!dark)}
+              className="text-xl hover:scale-110 transition"
+            >
               {dark ? <FaSun /> : <FaMoon />}
             </button>
           </div>
         </div>
       </nav>
 
+      {/* PROFILE MODAL */}
+      {expandImage && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]"
+          onClick={() => setExpandImage(false)}
+        >
+          <img
+            src="/profile.jpeg"
+            className="w-80 h-80 rounded-full object-cover border-4 border-violet-400 shadow-2xl"
+            alt="profile"
+          />
+        </div>
+      )}
+
       {/* HERO */}
-      <section className="flex flex-col justify-center items-center text-center min-h-screen px-6">
-        <div className={`relative backdrop-blur-3xl ${dark ? "bg-white/5 border-white/10" : "bg-white/80 border-gray-200"} border rounded-3xl p-12 shadow-[0_0_60px_rgba(0,0,0,0.4)]`}>
+      <section className="pt-28 flex flex-col justify-center items-center text-center min-h-screen px-6">
+        <div className={`relative backdrop-blur-3xl ${
+          dark ? "bg-white/5 border-white/10" : "bg-white/80 border-gray-200"
+        } border rounded-3xl p-12 shadow-[0_0_60px_rgba(0,0,0,0.4)]`}>
 
           <h1 className="text-4xl md:text-6xl font-bold">
-            Hi, I'm <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+            Hi, I'm{" "}
+            <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
               Shivansh Srivastava
             </span>
           </h1>
@@ -162,59 +173,69 @@ function App() {
         </div>
       </section>
 
-      {/* CERTIFICATES CAROUSEL */}
+      {/* PROJECTS */}
+      <section id="projects" className="py-24 px-6 text-center">
+        <h2 className="text-4xl font-bold mb-16">Projects</h2>
+
+        <div className="max-w-4xl mx-auto">
+          <div className={`backdrop-blur-xl ${
+            dark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
+          } border p-8 rounded-2xl shadow-xl hover:scale-105 transition`}>
+
+            <h3 className="text-xl font-semibold mb-4">Movie Recommender</h3>
+            <p className="opacity-70 mb-4">
+              ML-based recommendation system deployed live.
+            </p>
+
+            <a
+              href="https://movie-recommender-system-82fs.onrender.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-violet-400"
+            >
+              Live Demo →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* CERTIFICATES */}
       <section id="certificates" className="py-24 px-6 text-center overflow-hidden">
         <h2 className="text-4xl font-bold mb-16">Certificates</h2>
 
         <div
-          className="relative h-[380px] flex items-center justify-center perspective-[1400px]"
-          onTouchStart={(e) => touchStartX.current = e.touches[0].clientX}
-          onTouchEnd={(e) => {
-            const diff = e.changedTouches[0].clientX - touchStartX.current
-            if (diff > 50)
-              setActiveCert(prev => prev === 0 ? certificates.length - 1 : prev - 1)
-            if (diff < -50)
-              setActiveCert(prev => (prev + 1) % certificates.length)
-          }}
+          className="relative h-[420px] flex items-center justify-center"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
-
           {certificates.map((cert, index) => {
 
-            const total = certificates.length
-            let offset = index - activeCert
-
-            if (offset > total / 2) offset -= total
-            if (offset < -total / 2) offset += total
-
+            const offset = index - activeCert
             const absOffset = Math.abs(offset)
 
-            const scale = 1 - absOffset * 0.12
-            const opacity = 1 - absOffset * 0.2
-            const blur = absOffset * 1
+            if (absOffset > 3) return null
 
-            const horizontal = offset * 220
-            const vertical = absOffset * 18
+            const scale = absOffset === 0 ? 1 : absOffset === 1 ? 0.88 : absOffset === 2 ? 0.75 : 0.65
+            const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : absOffset === 2 ? 0.4 : 0.25
+            const verticalShift = absOffset * 18
+            const horizontalShift = offset * 240
 
             return (
               <div
                 key={index}
                 onClick={() => setActiveCert(index)}
-                className="absolute transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] cursor-pointer"
+                className="absolute cursor-pointer transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)]"
                 style={{
-                  transform: `
-                    translateX(${horizontal}px)
-                    translateY(${vertical}px)
-                    scale(${scale})
-                    rotateY(${offset * -8}deg)
-                  `,
-                  zIndex: 100 - absOffset,
-                  opacity: opacity,
-                  filter: `blur(${blur}px)`
+                  transform: `translate3d(${horizontalShift}px, ${verticalShift}px, 0) scale(${scale})`,
+                  zIndex: 50 - absOffset,
+                  opacity: opacity
                 }}
               >
                 <div
                   onDoubleClick={() => setSelectedCert(cert.file)}
-                  className={`rounded-xl overflow-hidden border ${dark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"} shadow-2xl`}
+                  className={`rounded-xl overflow-hidden border ${
+                    dark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
+                  } shadow-xl`}
                 >
                   <img
                     src={cert.file}
@@ -222,25 +243,43 @@ function App() {
                     className="w-[320px] h-[220px] object-cover"
                   />
                 </div>
+
                 <p className="mt-3 font-medium">{cert.title}</p>
               </div>
             )
           })}
-
         </div>
       </section>
 
       {/* CERTIFICATE MODAL */}
       {selectedCert && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedCert(null)}>
-          <img src={selectedCert}
-            className="max-h-[90vh] max-w-full rounded-xl shadow-2xl" />
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]"
+          onClick={() => setSelectedCert(null)}
+        >
+          <img
+            src={selectedCert}
+            className="max-h-[90vh] max-w-full rounded-xl shadow-2xl"
+            alt="certificate"
+          />
         </div>
       )}
 
+      {/* CONTACT */}
+      <section id="contact" className="py-24 text-center px-6">
+        <h2 className="text-4xl font-bold mb-6">Contact</h2>
+        <a
+          href="mailto:shivanshsrivastavaworks@gmail.com"
+          className="px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-lg hover:scale-105 transition"
+        >
+          Send Email
+        </a>
+      </section>
+
       {/* FOOTER */}
-      <footer className={`mt-auto py-6 text-center ${dark ? "bg-black/30" : "bg-gray-200"}`}>
+      <footer className={`mt-auto py-6 text-center ${
+        dark ? "bg-black/30" : "bg-gray-200"
+      }`}>
         <p className="text-sm opacity-70">
           © {new Date().getFullYear()} Shivansh Srivastava. All rights reserved.
         </p>
