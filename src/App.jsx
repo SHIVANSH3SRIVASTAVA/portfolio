@@ -69,9 +69,6 @@ function App() {
               src="/profile.jpeg"
               className="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-400 hover:scale-110 transition"
             />
-            <span className="font-semibold tracking-wide">
-              Shivansh Srivastava
-            </span>
           </div>
 
           <div className="flex gap-8 items-center font-medium">
@@ -181,7 +178,7 @@ function App() {
                 ML-based recommendation system deployed live.
               </p>
               <a
-                href="https://movie-recommender-system-ss.streamlit.app/"
+                href="https://movie-recommender-system-82fs.onrender.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-indigo-500"
