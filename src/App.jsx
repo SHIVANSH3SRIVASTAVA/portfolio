@@ -53,7 +53,7 @@ function App() {
 
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setExpandImage(true)}>
             <img
-              src="/profile.jpg"
+              src="/profile.jpeg"
               className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 hover:scale-110 transition"
             />
             <span className="hidden md:block font-semibold tracking-wide">
@@ -78,7 +78,7 @@ function App() {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
              onClick={() => setExpandImage(false)}>
           <img
-            src="/profile.jpg"
+            src="/profile.jpeg"
             className="w-72 h-72 rounded-full object-cover border-4 border-blue-500 shadow-2xl"
           />
         </div>
@@ -109,11 +109,37 @@ function App() {
             />
           </h2>
 
-          <div className="flex justify-center gap-6 mt-8 text-2xl">
-            <FaGithub />
-            <FaLinkedin />
-            <FaInstagram />
-          </div>
+          <div className="flex justify-center gap-8 mt-8 text-2xl">
+
+  <a
+    href="https://github.com/SHIVANSHSRIVASTAVA"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-110 hover:text-white transition duration-300"
+  >
+    <FaGithub />
+  </a>
+
+  <a
+    href="https://linkedin.com/in/shivansh3srivastava"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-110 hover:text-blue-400 transition duration-300"
+  >
+    <FaLinkedin />
+  </a>
+
+  {/* <a
+    href="https://instagram.com/YOUR_INSTAGRAM"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-110 hover:text-pink-400 transition duration-300"
+  >
+    <FaInstagram />
+  </a> */}
+
+</div>
+
 
           <a
             href="/resume.pdf"
