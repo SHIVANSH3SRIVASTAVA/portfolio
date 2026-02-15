@@ -183,7 +183,7 @@ function App() {
                 ML-based recommendation system deployed live.
               </p>
               <a
-                href="https://shivansh-srivastava-portfolio.vercel.app"
+                href="https://movie-recommender-system-82fs.onrender.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-violet-500"
