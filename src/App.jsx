@@ -1,174 +1,171 @@
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
+import { useState, useEffect } from "react"
+import { FaGithub, FaLinkedin, FaInstagram, FaMoon, FaSun } from "react-icons/fa"
 import { Typewriter } from "react-simple-typewriter"
+import AOS from "aos"
+import "aos/dist/aos.css"
+import Particles from "react-tsparticles"
+import { loadFull } from "tsparticles"
 
 function App() {
-  return (
-    <div className="relative min-h-screen bg-gray-950 text-white overflow-x-hidden">
 
-      {/* Background Gradient Glow */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-[-150px] left-[-100px] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-200px] right-[-150px] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px]" />
-      </div>
+  const [dark, setDark] = useState(true)
+  const [scrolled, setScrolled] = useState(false)
+  const [expandImage, setExpandImage] = useState(false)
+
+  useEffect(() => {
+    AOS.init({ duration: 1000 })
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const particlesInit = async (main) => {
+    await loadFull(main)
+  }
+
+  return (
+    <div className={`${dark ? "bg-gray-950 text-white" : "bg-white text-black"} relative min-h-screen transition-colors duration-500`}>
+
+      {/* PARTICLES BACKGROUND */}
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        className="absolute inset-0 -z-10"
+        options={{
+          background: { color: "transparent" },
+          particles: {
+            number: { value: 40 },
+            size: { value: 3 },
+            move: { enable: true, speed: 1 },
+            opacity: { value: 0.3 },
+          }
+        }}
+      />
 
       {/* NAVBAR */}
-      <nav className="fixed w-full backdrop-blur-xl bg-white/5 border-b border-white/10 z-50">
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-xl bg-black/40 shadow-lg" : "bg-transparent"}`}>
         <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setExpandImage(true)}>
             <img
               src="/profile.jpg"
-              alt="Shivansh"
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500/70 ring-offset-2 ring-offset-gray-950 hover:scale-105 transition duration-300"
+              alt="Profile"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 hover:scale-110 transition"
             />
-            <span className="hidden md:block font-semibold text-lg tracking-wide">
+            <span className="hidden md:block font-semibold">
               Shivansh Srivastava
             </span>
           </div>
 
-          <div className="space-x-6 text-gray-300 font-medium">
-            <a href="#skills" className="hover:text-white transition">Skills</a>
-            <a href="#projects" className="hover:text-white transition">Projects</a>
-            <a href="#certificates" className="hover:text-white transition">Certificates</a>
-            <a href="#contact" className="hover:text-white transition">Contact</a>
+          <div className="flex items-center gap-6 font-medium">
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#certificates">Certificates</a>
+            <a href="#contact">Contact</a>
+
+            {/* DARK MODE TOGGLE */}
+            <button onClick={() => setDark(!dark)}>
+              {dark ? <FaSun /> : <FaMoon />}
+            </button>
           </div>
 
         </div>
       </nav>
 
-      {/* HERO SECTION */}
-      <section className="flex items-center justify-center min-h-screen px-6 pt-20">
-
-        <div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-3xl p-10 md:p-16 text-center max-w-4xl shadow-2xl">
-
-          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-            Hi, I'm{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              Shivansh Srivastava
-            </span>
-          </h1>
-
-          <h2 className="mt-6 text-2xl md:text-3xl text-gray-300 font-medium">
-            <Typewriter
-              words={[
-                "Software Developer",
-                "Machine Learning Enthusiast",
-                "Full Stack Learner",
-                "Problem Solver"
-              ]}
-              loop
-              cursor
-              cursorStyle="|"
-              typeSpeed={70}
-              deleteSpeed={50}
-              delaySpeed={1500}
-            />
-          </h2>
-
-          <p className="mt-6 text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            B.Tech CSE student passionate about building scalable software
-            systems, intelligent applications, and impactful digital experiences.
-          </p>
-
-          {/* SOCIAL ICONS */}
-          <div className="flex justify-center gap-6 mt-8 text-2xl text-gray-400">
-            <a href="https://github.com/YOUR_GITHUB" target="_blank">
-              <FaGithub className="hover:text-white transition duration-300" />
-            </a>
-            <a href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank">
-              <FaLinkedin className="hover:text-blue-400 transition duration-300" />
-            </a>
-            <a href="https://instagram.com/YOUR_INSTAGRAM" target="_blank">
-              <FaInstagram className="hover:text-pink-400 transition duration-300" />
-            </a>
-          </div>
-
+      {/* EXPANDED PROFILE MODAL */}
+      {expandImage && (
+        <div
+          className="fixed inset-0 bg-black/80 flex justify-center items-center z-50"
+          onClick={() => setExpandImage(false)}
+        >
+          <img
+            src="/profile.jpg"
+            className="w-64 h-64 rounded-full object-cover border-4 border-blue-500"
+          />
         </div>
+      )}
+
+      {/* HERO */}
+      <section className="flex flex-col justify-center items-center text-center min-h-screen px-6">
+
+        <h1 className="text-5xl md:text-6xl font-bold">
+          Hi, I'm{" "}
+          <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Shivansh Srivastava
+          </span>
+        </h1>
+
+        <h2 className="mt-6 text-2xl">
+          <Typewriter
+            words={[
+              "Software Developer",
+              "Machine Learning Enthusiast",
+              "Full Stack Learner",
+              "Problem Solver"
+            ]}
+            loop
+            cursor
+          />
+        </h2>
+
+        <div className="flex gap-6 mt-8 text-2xl">
+          <a href="https://github.com/YOUR_GITHUB" target="_blank"><FaGithub /></a>
+          <a href="https://linkedin.com/in/YOUR_LINKEDIN" target="_blank"><FaLinkedin /></a>
+          <a href="https://instagram.com/YOUR_INSTAGRAM" target="_blank"><FaInstagram /></a>
+        </div>
+
+        {/* RESUME BUTTON */}
+        <a
+          href="/resume.pdf"
+          download
+          className="mt-8 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:opacity-90 transition"
+        >
+          Download Resume
+        </a>
 
       </section>
 
       {/* SKILLS */}
-      <section id="skills" className="py-24 px-6 max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Skills
-        </h2>
+      <section id="skills" className="py-20 px-6 max-w-6xl mx-auto" data-aos="fade-up">
+        <h2 className="text-4xl font-bold text-center mb-12">Skills</h2>
+      </section>
 
-        <div className="grid md:grid-cols-3 gap-10">
+      {/* PROJECTS */}
+      <section id="projects" className="py-20 px-6 bg-gray-900" data-aos="fade-up">
+        <h2 className="text-4xl font-bold text-center mb-12">Projects</h2>
 
-          {[
-            {
-              title: "Frontend",
-              content: "HTML, CSS, JavaScript, React, Tailwind CSS"
-            },
-            {
-              title: "Backend",
-              content: "Python, Flask, Node.js, REST APIs"
-            },
-            {
-              title: "Tools",
-              content: "Git, GitHub, Linux, Streamlit"
-            }
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl hover:scale-105 transition duration-300 shadow-xl"
-            >
-              <h3 className="text-xl font-semibold mb-4">{item.title}</h3>
-              <p className="text-gray-400">{item.content}</p>
-            </div>
-          ))}
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+          <div className="bg-white/5 p-6 rounded-xl backdrop-blur-md">
+            <h3 className="font-semibold text-xl mb-3">Movie Recommender</h3>
+            <p className="text-gray-400 mb-4">Content-based recommendation system using ML.</p>
+            <a href="https://movie-recommender-system-ss.streamlit.app/" target="_blank" className="text-blue-400">
+              Live Demo →
+            </a>
+          </div>
 
         </div>
       </section>
 
       {/* CERTIFICATES */}
-      <section id="certificates" className="py-24 px-6">
-        <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Certificates
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-
-          {[
-            "Machine Learning Certification",
-            "Data Structures & Algorithms",
-            "Web Development Certification"
-          ].map((cert, index) => (
-            <div
-              key={index}
-              className="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl hover:scale-105 transition duration-300 shadow-xl"
-            >
-              <h3 className="font-semibold text-lg">{cert}</h3>
-              <p className="text-gray-400 text-sm mt-2">
-                Issued by recognized platform
-              </p>
-            </div>
-          ))}
-
-        </div>
+      <section id="certificates" className="py-20 px-6" data-aos="fade-up">
+        <h2 className="text-4xl font-bold text-center mb-12">Certificates</h2>
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 px-6 text-center">
-        <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Contact Me
-        </h2>
-
-        <p className="text-gray-400 mb-8">
-          Open to internships, collaborations and exciting opportunities.
-        </p>
-
-        <a
-          href="mailto:yourmail@gmail.com"
-          className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90 transition shadow-lg"
-        >
+      <section id="contact" className="py-20 text-center" data-aos="fade-up">
+        <h2 className="text-4xl font-bold mb-6">Contact</h2>
+        <a href="mailto:yourmail@gmail.com" className="px-6 py-3 bg-blue-600 rounded-lg">
           Send Email
         </a>
       </section>
 
-      {/* FOOTER */}
-      <footer className="text-center py-6 border-t border-white/10 text-gray-500">
-        © 2026 Shivansh Srivastava. All rights reserved.
+      <footer className="text-center py-6 border-t border-white/10">
+        © 2026 Shivansh Srivastava
       </footer>
 
     </div>
